@@ -1,6 +1,10 @@
 import subprocess
 import re
+import time
+from audioop import avgpp
 from math import log10
+from turtle import delay
+
 from sympy import symbols, Eq, solve
 
 
@@ -16,14 +20,12 @@ class APTracker():
         result = subprocess.run(f"iwlist {self.wifiInterface} scanning", shell=True, stdout=subprocess.PIPE,
                                  stderr=subprocess.STDOUT)
         out = result.stdout.decode("utf-8", errors="ignore")
-
         l1 = out.split("Cell")
 
         result1 = subprocess.run("nmcli dev wifi list", shell=True, stdout=subprocess.PIPE,
                                  stderr=subprocess.STDOUT)
         out1 = result1.stdout.decode("utf-8", errors="ignore")
         l2 = out1.split("\n")
-        print(l2)
 
         if len(l1)  > 1 and len(l2) > 1:
             l1 = l1[1::]
@@ -62,13 +64,17 @@ class APTracker():
 
     def findPosition(self):
         xc0, xc1, xc2, yc0, yc1, yc2 = self.AP0["x"], self.AP1["x"], self.AP2["x"], self.AP0["y"], self.AP1["y"], self.AP2["y"]
-        r0,r1,r2=self.AP0["Distance"], self.AP1["Distance"], self.AP2["Distance"]
+        r0,r1,r2=self.APs[self.AP0["BSSID"]]["Distance"], self.APs[self.AP1["BSSID"]]["Distance"], self.APs[self.AP2["BSSID"]]["Distance"]
         x, y = symbols('x y')
         equation1 = Eq((x - xc0)**2+(y-yc0)**2, r0**2)
         equation2 = Eq((x - xc1)**2+(y-yc1)**2, r1**2)
         equation3 = Eq((x - xc2)**2+(y-yc2)**2, r2**2)
-        solution = solve((equation1, equation2), (x, y))
-        return solution  # dict
+        solution1 = solve((equation1, equation2), (x, y))
+        solution2 = solve((equation3, equation2), (x, y))
+        solution3 = solve((equation1, equation3), (x, y))
+        xmoy = round((solution1[0][0]+solution2[0][0]+solution3[0][0]+solution1[1][0]+solution2[1][0]+solution3[1][0])/6, 2)
+        ymoy = round((solution1[0][1]+solution2[0][1]+solution3[0][1]+solution1[1][1]+solution2[1][1]+solution3[1][1])/6, 2)
+        return xmoy, ymoy
 
     def format_AP(self,ap):
         ch=f"ESSID: {ap['ESSID']}\n"+"\n".join(["   "+str(i)+": "+str(j) for i,j in ap.items() if i!="ESSID"])
@@ -79,17 +85,20 @@ class APTracker():
         for AP in list(self.APs.values()):
             print(self.format_AP(AP))
 
-    def distance(self, p, f, rate, p0=0 , n=2.7 ):
+    def distance(self, p, f, rate, p0=0 , n=2 ):
         fm = int(p) - (-154+10*log10(int(rate)*10**6))
-        print(p, fm)
         return 10**((p0-0*fm-int(p)-10*n*log10(float(f)*1000)+30*n-32.44)/(10*n))
-    def distance2(self,p,n=2):
+
+    def distance2(self, p, n=2):
         measured_power = -44
-        return 10**((measured_power-p)/(10*n))
+        return 10 ** ((measured_power - p) / (10 * n))
 
 apt = APTracker()
 apt.fetch_APs()
 apt.show_APs()
+apt.ChooseRefrenceAPs()
 
-if apt.ChooseRefrenceAPs():
+while True:
     print(apt.findPosition())
+    apt.fetch_APs()
+    time.sleep(1)

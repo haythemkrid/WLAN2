@@ -74,18 +74,18 @@ print(L)
 
 print("Pick 3 access points and their coordinates:")
 pickedAPs = {}
-"""for i in range(3):
+for i in range(3):
     pickedAPsName = input(f"Access point {i + 1} ESSID: ")
-    x = input("Type x coordinate: ")
-    y = input("Type y coordinate: ")
+    x = int(input("Type x coordinate: "))
+    y = int(input("Type y coordinate: "))
     # Add the access point as a key with coordinates as values
-    pickedAPs[pickedAPsName] = {"coordinates": {"x": x, "y": y}}"""
+    pickedAPs[pickedAPsName] = {"coordinates": {"x": x, "y": y}}
 #for testing purposes:
-
+"""
 pickedAPs ["OPPO A54"]= {"coordinates": {"x": 4, "y": 5}}
 
 pickedAPs["guest network"] = {"coordinates": {"x": 9, "y": 10}}
-pickedAPs["TOPNET8A828ED9"] = {"coordinates": {"x": 7, "y": 9}}
+pickedAPs["TOPNET8A828ED9"] = {"coordinates": {"x": 7, "y": 9}"""
 
 print(pickedAPs)
 finalAPs=[]

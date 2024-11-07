@@ -118,7 +118,7 @@ class APSelectionApp:
                 x = self.picked_aps[essid]['coordinates']['x']
                 y = self.picked_aps[essid]['coordinates']['y']
                 color = colors[i % len(colors)]
-                plt.text(29, 30-i*2, essid, color=color, ha='left', va='center', fontsize=10)
+                plt.text(26, 30-i*2, essid, color=color, ha='left', va='center', fontsize=10)
 
         plt.show()
 

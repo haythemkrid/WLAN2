@@ -3,7 +3,6 @@ import subprocess
 import re
 from math import log10
 
-
 class APTracker():
     def __init__(self, wifiInterface = "wlp0s20f3"):
         self.APs = dict()

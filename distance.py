@@ -93,7 +93,7 @@ class APTracker():
         measured_power = -44
         return 10 ** ((measured_power - p) / (10 * n))
 
-apt = APTracker()
+apt = APTracker("wlo1")
 apt.fetch_APs()
 apt.show_APs()
 apt.ChooseRefrenceAPs()

@@ -111,7 +111,7 @@ class APSelectionApp:
 
         for circle in c:
             plt.gca().add_artist(circle)
-
+        #tkinter
         for i, ap in enumerate(self.aps):
             if ap['ESSID'] in self.picked_aps:
                 essid = ap['ESSID']

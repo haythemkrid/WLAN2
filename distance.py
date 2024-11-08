@@ -1,9 +1,8 @@
 import subprocess
 import re
 import time
-from audioop import avgpp
 from math import log10
-from turtle import delay
+
 
 from sympy import symbols, Eq, solve
 
